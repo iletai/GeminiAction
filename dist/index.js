@@ -33602,7 +33602,7 @@ var github = __nccwpck_require__(489);
  * Possible roles.
  * @public
  */
-const POSSIBLE_ROLES = (/* unused pure expression or super */ null && (["user", "model", "function"]));
+const POSSIBLE_ROLES = ["user", "model", "function"];
 /**
  * Harm categories that would cause prompts or candidates to be blocked.
  * @public
@@ -33753,7 +33753,7 @@ class GoogleGenerativeAIError extends Error {
         super(`[GoogleGenerativeAI Error]: ${message}`);
     }
 }
-class GoogleGenerativeAIResponseError extends (/* unused pure expression or super */ null && (GoogleGenerativeAIError)) {
+class GoogleGenerativeAIResponseError extends GoogleGenerativeAIError {
     constructor(message, response) {
         super(message);
         this.response = response;
@@ -34302,12 +34302,12 @@ function formatEmbedContentInput(params) {
  * limitations under the License.
  */
 // https://ai.google.dev/api/rest/v1beta/Content#part
-const VALID_PART_FIELDS = (/* unused pure expression or super */ null && ([
+const VALID_PART_FIELDS = [
     "text",
     "inlineData",
     "functionCall",
     "functionResponse",
-]));
+];
 const VALID_PARTS_PER_ROLE = {
     user: ["text", "inlineData"],
     function: ["functionResponse"],
@@ -34688,8 +34688,9 @@ class GoogleGenerativeAI {
 async function run() {
     const apiKey = core.getInput("gemini-api-key");
     const githubToken = core.getInput("github-token");
-    const prTemplate = await github.context.repo;
     const octokit = github.getOctokit(githubToken);
+    const prTemplate = await github.context.repo;
+    const model = new GenerativeModel(apiKey);
     const issue = await octokit.rest.issues.get({
         ...github.context.issue,
         issue_number: github.context.issue.number,
@@ -34700,6 +34701,11 @@ async function run() {
     const availablePullRequests = await octokit.rest.pulls.list({
         ...github.context.repo,
     });
+    // Get First Pull Request If Exist. Avoid Null
+    if (availablePullRequests.data.length === 0) {
+        console.log("No Pull Requests Available");
+        return;
+    }
     const firstPullRequest = availablePullRequests.data[0];
     const pullRequest = await octokit.rest.pulls.get({
         ...github.context.repo,
