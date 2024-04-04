@@ -29,11 +29,16 @@ async function run() {
         pull_number: firstPullRequest.number,
     });
     // Comment Pull Request
-    await octokit.rest.issues.createComment({
+    await octokit.rest.pulls.createReview({
         ...github.context.repo,
-        issue_number: pullRequest.data.number,
+        pull_number: pullRequest.data.number,
         body: "Hello from Gemini!",
     });
+    // await octokit.rest.issues.createComment({
+    //     ...github.context.repo,
+    //     issue_number: pullRequest.data.number,
+    //     body: "Hello from Gemini!",
+    // });
     console.log(prTemplate);
     console.log(availableLabels);
     console.log(issue); 
