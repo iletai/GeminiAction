@@ -34688,7 +34688,7 @@ class GoogleGenerativeAI {
 async function run() {
     // Read file pull request template from github repo
     const prTemplate = await github.context.repo;
-    console.log(prTemplat);
+    console.log(prTemplate);
 }
 
 run();
