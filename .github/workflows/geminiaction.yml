@@ -9,10 +9,12 @@ on:
 
 jobs:
   example_gemini:
-    runs-on: ubuntu-20.04
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: GeminiAction
         uses: iletai/GeminiAction@develop
+        with:
+          gemini-api-key: ${{ secrets.GEMINI_API_KEY }}

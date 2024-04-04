@@ -1,13 +1,13 @@
 name: 'Gemini Github Action'
 description: 'Handle Action With Gemini'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  gemini-api-key: #Id Gemini Input Key
+    description: 'Gemini API Key'
     required: true
-    default: 'World'
-outputs:
-  time: # id of output
-    description: 'The time we greeted you'
+  github-token:
+    description: "GITHUB_TOKEN"
+    required: true
+    default: ${{ github.token }}
 runs:
   using: 'node20'
   main: dist/index.js
