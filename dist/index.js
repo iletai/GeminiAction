@@ -34708,10 +34708,6 @@ const getPullRequestNumber = (ref) => {
             generationConfig: { temperature: 0 },
         });
 
-        core.debug({ completion });
-
-        let labels = /LABELS\: (.+)/g.exec(completion.response.text());
-
         if (labels) {
             labels = labels[1].trim().split(/,\s*/);
 
@@ -34786,6 +34782,21 @@ const getPullRequestNumber = (ref) => {
         }
         const completion = await model.generateContent(prompt);
         core.debug({ completion });
+        let labels = /LABELS\: (.+)/g.exec(completion.response.text());
+        if (labels) {
+            labels = labels[1].trim().split(/,\s*/);
+
+            await octokit.rest.issues.setLabels({
+                owner: github.context.issue.owner,
+                repo: github.context.issue.repo,
+                issue_number: github.context.issue.number,
+                labels,
+            });
+        } else {
+            core.setFailed(
+                `Failed to propose labels: completion=${completion.data.choices[0].text}`,
+            );
+        }
     } catch (error) {
         core.setFailed(`Error Message: ${error.stack}`);
     }
