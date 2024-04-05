@@ -34710,7 +34710,14 @@ const getPullRequestNumber = (ref) => {
             issue_number: github.context.issue.number,
             assignees: [github.context.actor]
         });
-        
+
+        // Create branch base on this Issues and link it to issues.
+        await octokit.rest.git.createRef({
+            owner,
+            repo,
+            ref: `refs/heads/issue-${github.context.issue.number}`,
+            sha: github.context.sha
+        });
         core.debug(`[GeminiAction]  Ref: ${ref} : getPullRequestNumber(ref) => ${pullRequestNumber.number}`)
         const prNumber = github.context.issue.number || getPullRequestNumber(ref);
         const model = new GenerativeModel(apiKey, {
