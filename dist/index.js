@@ -34727,10 +34727,10 @@ const getPullRequestNumber = (ref) => {
             ...github.context.repo,
         });
         const getPrLabels = async (prNumber) => {
-            const { data } = await octokit.pulls.get({
-              pull_number: prNumber,
+            const { data } = await octokit.rest.pulls.get({
               owner,
               repo,
+              pull_number: prNumber
             });
             if (data.length === 0) {
               throw new Error(`No Pull Requests found for ${prNumber} (${ref}).`);
