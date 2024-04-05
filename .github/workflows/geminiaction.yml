@@ -1,0 +1,24 @@
+name: Example Using Gemini action
+# This workflow represents a set of basic End-to-End tests
+on:
+  # push:
+  #   branches:
+  #     - 'develop'
+  # pull_request:
+  # workflow_dispatch:
+
+  issues:
+    types: [opened, edited]
+
+jobs:
+  example_gemini:
+    name: Example Usable
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: GeminiAction
+        uses: iletai/GeminiAction@develop
+        with:
+          gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
