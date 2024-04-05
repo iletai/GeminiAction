@@ -34707,21 +34707,6 @@ const getPullRequestNumber = (ref) => {
             model: "gemini-pro",
             generationConfig: { temperature: 0 },
         });
-
-        if (labels) {
-            labels = labels[1].trim().split(/,\s*/);
-
-            await octokit.rest.issues.setLabels({
-                owner: github.context.issue.owner,
-                repo: github.context.issue.repo,
-                issue_number: github.context.issue.number,
-                labels,
-            });
-        } else {
-            core.setFailed(
-                `Failed to propose labels: completion=${completion.data.choices[0].text}`,
-            );
-        }
         const availableIssuesLabels = async (issuesNumber) => {
             const { data } = await octokit.issues.listLabelsOnIssue({
                 issue_number: issuesNumber,
