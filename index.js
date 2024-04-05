@@ -43,26 +43,27 @@ const getPullRequestNumber = (ref) => {
         const availableLabels = await octokit.rest.issues.listLabelsForRepo({
             ...github.context.repo,
         });
-        const getPrLabels = async (prNumber) => {
-            try {
-                const { data } = await octokit.rest.pulls.get({
-                    owner,
-                    repo,
-                    pull_number: prNumber
-                });
-                return data.labels.map((label) => label.name);
-            } catch (error) {
-                if (error.status === 404) {
-                    return [];
-                }
-                throw new Error(`Error retrieving PR labels: ${error.message}`);
-            }
-        };
+        // const getPrLabels = async (prNumber) => {
+        //     try {
+        //         const { data } = await octokit.rest.pulls.get({
+        //             owner,
+        //             repo,
+        //             pull_number: prNumber
+        //         });
+        //         return data.labels
+        //         return data.labels.map((label) => label.name);
+        //     } catch (error) {
+        //         if (error.status === 404) {
+        //             return [];
+        //         }
+        //         throw new Error(`Error retrieving PR labels: ${error.message}`);
+        //     }
+        // };
 
-        const prLabels = await getPrLabels(prNumber);
-        core.debug(`[GeminiAction] Found PR labels: ${prLabels.toString()}`);
+        // const prLabels = await getPrLabels(prNumber);
+        // core.debug(`[GeminiAction] Found PR labels: ${prLabels.toString()}`);
         // Get the valid parity labels in this pull request.
-        const prValidLabels = prLabels.filter(value => getPrLabels.includes(value));
+        // const prValidLabels = prLabels.filter(value => getPrLabels.includes(value));
         const prompt = `
         You have a role to manage a GitHub repository. Given an issue/pull request information (subject and body), choose suitable labels to it from the labels available for the repository.
     
@@ -75,23 +76,22 @@ const getPullRequestNumber = (ref) => {
         \`\`\`
     
         ## ISSUE/PULL REQUEST ##
-        SUBJECT: ${issue.data.title} or ${prLabels.data.title}
-        BODY: ${issue.data.body} or ${prLabels.data.body}
+        SUBJECT: ${issue.data.title}
+        BODY: ${issue.data.body}
       `;
         core.debug(`Prompt: ${prompt}`);
-        if (prValidLabels.length > 0) {
-            core.info(`OK: Pull Request has at least one parity label.`);
-        }
-        else {
-            core.error(`Missing parity label: The PR should have at least one of these labels: ${prValidLabels.join(`, `)}`);
-            throw `[GeminiAction] No labels exist in the PR. Please add at least one of these labels: ${prValidLabels.join(`, `)}`;
-        }
+        // if (prValidLabels.length > 0) {
+        //     core.info(`OK: Pull Request has at least one parity label.`);
+        // }
+        // else {
+        //     core.error(`Missing parity label: The PR should have at least one of these labels: ${prValidLabels.join(`, `)}`);
+        //     throw `[GeminiAction] No labels exist in the PR. Please add at least one of these labels: ${prValidLabels.join(`, `)}`;
+        // }
         const completion = await model.generateContent(prompt);
         core.debug({ completion });
         let labels = /LABELS\: (.+)/g.exec(completion.response.text());
         if (labels) {
             labels = labels[1].trim().split(/,\s*/);
-
             await octokit.rest.issues.setLabels({
                 owner: github.context.issue.owner,
                 repo: github.context.issue.repo,
