@@ -34708,7 +34708,7 @@ const getPullRequestNumber = (ref) => {
             generationConfig: { temperature: 0 },
         });
         const availableIssuesLabels = async (issuesNumber) => {
-            const { data } = await octokit.issues.listLabelsOnIssue({
+            const { data } = await octokit.rest.issues.listLabelsOnIssue({
                 issue_number: issuesNumber,
                 owner,
                 repo,
@@ -34762,8 +34762,8 @@ const getPullRequestNumber = (ref) => {
             core.info(`OK: Pull Request has at least one parity label.`);
         }
         else {
-            core.error(`Missing parity label: The PR should have at least one of these labels: ${validLabels.join(`, `)}`);
-            throw `[GeminiAction] No labels exist in the PR. Please add at least one of these labels: ${validLabels.join(`, `)}`;
+            core.error(`Missing parity label: The PR should have at least one of these labels: ${prValidLabels.join(`, `)}`);
+            throw `[GeminiAction] No labels exist in the PR. Please add at least one of these labels: ${prValidLabels.join(`, `)}`;
         }
         const completion = await model.generateContent(prompt);
         core.debug({ completion });
