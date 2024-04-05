@@ -34703,8 +34703,15 @@ const getPullRequestNumber = (ref) => {
         const ref = github.context.ref;
         const octokit = github.getOctokit(githubToken);
         const pullRequestNumber = getPullRequestNumber(ref);
-        core.debug(`[GeminiAction]  Ref: ${ref} : getPullRequestNumber(ref) => ${pullRequestNumber}`)
-        core.debug(`[GeminiAction]  Issues Number => ${github.context.issue.number}`)
+        // Assigne Issues for Owner Repo
+        await octokit.rest.issues.addAssignees({
+            owner,
+            repo,
+            issue_number: github.context.issue.number,
+            assignees: [github.context.actor]
+        });
+        
+        core.debug(`[GeminiAction]  Ref: ${ref} : getPullRequestNumber(ref) => ${pullRequestNumber.number}`)
         const prNumber = github.context.issue.number || getPullRequestNumber(ref);
         const model = new GenerativeModel(apiKey, {
             model: "gemini-pro",
@@ -34717,42 +34724,26 @@ const getPullRequestNumber = (ref) => {
                 issue_number: issuesNumber
             });
             if (data.length === 0) {
-                throw new Error(`[GeminiAction]  No Issues found for ${issuesNumber} (${ref}).`);
+                await octokit.rest.issues.createComment({
+                    owner,
+                    repo,
+                    issue_number: issuesNumber,
+                    body: `:octopus: No Labels Found in this PR. Please add at least one of these labels: ${JSON.stringify(data.labels, null, 2)}`
+                });
+                return [];
             }
             return data.labels.map((label) => label.name);
         };
         core.debug(`[GeminiAction]  Found PR number: ${github.context.issue.number}`);
         const available = availableIssuesLabels(prNumber);
-        core.debug(`[GeminiAction]  available number: ${available}`);
+        core.debug(`[GeminiAction]  available number: ${available.number}`);
         const issue = await octokit.rest.issues.get({
             ...github.context.issue,
             issue_number: github.context.issue.number,
         });
-
         const availableLabels = await octokit.rest.issues.listLabelsForRepo({
             ...github.context.repo,
         });
-        // const getPrLabels = async (prNumber) => {
-        //     try {
-        //         const { data } = await octokit.rest.pulls.get({
-        //             owner,
-        //             repo,
-        //             pull_number: prNumber
-        //         });
-        //         return data.labels
-        //         return data.labels.map((label) => label.name);
-        //     } catch (error) {
-        //         if (error.status === 404) {
-        //             return [];
-        //         }
-        //         throw new Error(`Error retrieving PR labels: ${error.message}`);
-        //     }
-        // };
-
-        // const prLabels = await getPrLabels(prNumber);
-        // core.debug(`[GeminiAction] Found PR labels: ${prLabels.toString()}`);
-        // Get the valid parity labels in this pull request.
-        // const prValidLabels = prLabels.filter(value => getPrLabels.includes(value));
         const prompt = `
         You have a role to manage a GitHub repository. Given an issue/pull request information (subject and body), choose suitable labels to it from the labels available for the repository.
     
