@@ -44,16 +44,20 @@ const getPullRequestNumber = (ref) => {
             ...github.context.repo,
         });
         const getPrLabels = async (prNumber) => {
-            const { data } = await octokit.rest.pulls.get({
-              owner,
-              repo,
-              pull_number: prNumber
-            });
-            if (data.length === 0) {
-              throw new Error(`No Pull Requests found for ${prNumber} (${ref}).`);
+            try {
+                const { data } = await octokit.rest.pulls.get({
+                    owner,
+                    repo,
+                    pull_number: prNumber
+                });
+                return data.labels.map((label) => label.name);
+            } catch (error) {
+                if (error.status === 404) {
+                    return [];
+                }
+                throw new Error(`Error retrieving PR labels: ${error.message}`);
             }
-            return data.labels.map((label) => label.name);
-          };
+        };
 
         const prLabels = await getPrLabels(prNumber);
         core.debug(`[GeminiAction] Found PR labels: ${prLabels.toString()}`);
