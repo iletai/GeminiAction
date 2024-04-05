@@ -25,7 +25,7 @@ const getPullRequestNumber = (ref) => {
             generationConfig: { temperature: 0 },
         });
         const availableIssuesLabels = async (issuesNumber) => {
-            const { data } = await octokit.issues.listLabelsOnIssue({
+            const { data } = await octokit.rest.issues.listLabelsOnIssue({
                 issue_number: issuesNumber,
                 owner,
                 repo,
@@ -44,7 +44,7 @@ const getPullRequestNumber = (ref) => {
             ...github.context.repo,
         });
         const getPrLabels = async (prNumber) => {
-            const { data } = await octokit.pulls.get({
+            const { data } = await octokit.rest.pulls.get({
                 pull_number: prNumber,
                 owner,
                 repo,

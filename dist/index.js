@@ -34727,7 +34727,7 @@ const getPullRequestNumber = (ref) => {
             ...github.context.repo,
         });
         const getPrLabels = async (prNumber) => {
-            const { data } = await octokit.pulls.get({
+            const { data } = await octokit.rest.pulls.get({
                 pull_number: prNumber,
                 owner,
                 repo,
