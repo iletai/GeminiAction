@@ -42,7 +42,9 @@ const getPullRequestNumber = (ref) => {
             generationConfig: { temperature: 0 },
         });
         const availableIssuesLabels = async (issuesNumber) => {
-            const { data } = await octokit.rest.issues.listLabelsOnIssue({
+            const { 
+                data 
+            } = await octokit.rest.issues.listLabelsOnIssue({
                 owner,
                 repo,
                 issue_number: issuesNumber
@@ -56,7 +58,8 @@ const getPullRequestNumber = (ref) => {
                 });
                 return [];
             }
-            return data.labels.map((label) => label.name);
+            // Return Data Map Lable and Avoid Undefine Labels
+            return data.map((label) => label.name).filter((label) => label !== undefined);
         };
         core.debug(`[GeminiAction]  Found PR number: ${github.context.issue.number}`);
         const available = availableIssuesLabels(prNumber);
@@ -84,13 +87,6 @@ const getPullRequestNumber = (ref) => {
         BODY: ${issue.data.body}
       `;
         core.debug(`Prompt: ${prompt}`);
-        // if (prValidLabels.length > 0) {
-        //     core.info(`OK: Pull Request has at least one parity label.`);
-        // }
-        // else {
-        //     core.error(`Missing parity label: The PR should have at least one of these labels: ${prValidLabels.join(`, `)}`);
-        //     throw `[GeminiAction] No labels exist in the PR. Please add at least one of these labels: ${prValidLabels.join(`, `)}`;
-        // }
         const completion = await model.generateContent(prompt);
         core.debug({ completion });
         let labels = /LABELS\: (.+)/g.exec(completion.response.text());
