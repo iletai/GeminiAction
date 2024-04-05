@@ -19,7 +19,9 @@ const getPullRequestNumber = (ref) => {
         const githubToken = core.getInput("github-token");
         const ref = github.context.ref;
         const octokit = github.getOctokit(githubToken);
-        core.debug(`[GeminiAction]  Ref: ${ref} : getPullRequestNumber(ref) = ${getPullRequestNumber(ref)}`)
+        const pullRequestNumber = getPullRequestNumber(ref);
+        core.debug(`[GeminiAction]  Ref: ${ref} : getPullRequestNumber(ref) => ${pullRequestNumber}`)
+        core.debug(`[GeminiAction]  Issues Number => ${github.context.issue.number}`)
         const prNumber = github.context.issue.number || getPullRequestNumber(ref);
         const model = new GenerativeModel(apiKey, {
             model: "gemini-pro",
@@ -27,16 +29,16 @@ const getPullRequestNumber = (ref) => {
         });
         const availableIssuesLabels = async (issuesNumber) => {
             const { data } = await octokit.rest.issues.listLabelsOnIssue({
-                issue_number: issuesNumber,
                 owner,
                 repo,
+                issue_number: issuesNumber
             });
             if (data.length === 0) {
                 throw new Error(`[GeminiAction]  No Issues found for ${issuesNumber} (${ref}).`);
             }
             return data.labels.map((label) => label.name);
         };
-        core.debug(`[GeminiAction]  Found PR number: ${github.context.issue}`);
+        core.debug(`[GeminiAction]  Found PR number: ${github.context.issue.number}`);
         const available = availableIssuesLabels(prNumber);
         core.debug(`[GeminiAction]  available number: ${available}`);
         const issue = await octokit.rest.issues.get({
