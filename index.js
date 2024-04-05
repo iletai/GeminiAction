@@ -19,6 +19,7 @@ const getPullRequestNumber = (ref) => {
         const githubToken = core.getInput("github-token");
         const ref = github.context.ref;
         const octokit = github.getOctokit(githubToken);
+        core.debug(`[GeminiAction]  Ref: ${ref} : getPullRequestNumber(ref) = ${getPullRequestNumber(ref)}`)
         const prNumber = github.context.issue.number || getPullRequestNumber(ref);
         const model = new GenerativeModel(apiKey, {
             model: "gemini-pro",
@@ -35,6 +36,9 @@ const getPullRequestNumber = (ref) => {
             }
             return data.labels.map((label) => label.name);
         };
+        core.debug(`[GeminiAction]  Found PR number: ${github.context.issue}`);
+        const available = availableIssuesLabels(prNumber);
+        core.debug(`[GeminiAction]  available number: ${available}`);
         const issue = await octokit.rest.issues.get({
             ...github.context.issue,
             issue_number: github.context.issue.number,
