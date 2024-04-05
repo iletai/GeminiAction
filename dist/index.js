@@ -34741,7 +34741,7 @@ const getPullRequestNumber = (ref) => {
         const prLabels = await getPrLabels(prNumber);
         core.debug(`[GeminiAction] Found PR labels: ${prLabels.toString()}`);
         // Get the valid parity labels in this pull request.
-        const prValidLabels = prLabels.filter(value => validLabels.includes(value));
+        const prValidLabels = prLabels.filter(value => getPrLabels.includes(value));
         const prompt = `
         You have a role to manage a GitHub repository. Given an issue/pull request information (subject and body), choose suitable labels to it from the labels available for the repository.
     
