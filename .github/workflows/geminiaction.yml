@@ -55,7 +55,9 @@ jobs:
             const { GoogleGenerativeAI } = require("@google/generative-ai");
             const body = context.payload.issue.body;
             const genAI = new GoogleGenerativeAI(process.env.APIKEY);
-            const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+            const modelKey = "gemini-pro";
+
+            const model = genAI.getGenerativeModel({ model: modelKey });
             console.log(body);
             const result = await model.generateContent(body);
             const response = await result.response;
