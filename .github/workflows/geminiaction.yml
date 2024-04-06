@@ -34,7 +34,7 @@ jobs:
             const { GenerativeModel } = require("@google/generative-ai");
             const body = context.payload.issue.body;
             console.log(body);
-            const model = new GenerativeModel(process.env.gemini - api - key, {
+            const model = new GenerativeModel(process.env.gemini-api-key, {
               model: "gemini-pro",
               generationConfig: { temperature: 0 },
             });
