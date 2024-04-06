@@ -55,10 +55,11 @@ jobs:
             const body = context.payload.issue.body;
             console.log(body);
             const modelName = "gemini-pro";
-            const generativeModel = new GenerativeModel(process.env.APIKEY, {
+            const modelParam = {
               model: modelName,
               generationConfig: { temperature: 0 },
-            });
+            };
+            const generativeModel = new GenerativeModel(process.env.APIKEY, modelParam);
             const response = await generativeModel.generateContent(body);
             console.log(response);
       - run: echo ${{ steps.scriptgemini.outputs.result }}
