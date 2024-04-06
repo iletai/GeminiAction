@@ -20,9 +20,6 @@ jobs:
       - name: Install NPM dependencies
         run: npm i @google/generative-ai
 
-      - name: Install NPM dependencies
-        run: npm i @google-cloud/vertexai
-
       - name: Using Scripts
         id: scriptgemini
         uses: actions/github-script@v7
@@ -30,7 +27,6 @@ jobs:
           gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
         with:
           script: |
-            const { VertexAI } = require("@google-cloud/vertexai");
             const { GenerativeModel } = require("@google/generative-ai");
             const body = context.payload.issue.body;
             const apiKey = process.env;
@@ -41,6 +37,7 @@ jobs:
             });
             const response = await model.generate(body);
             console.log(response);
+      - run: echo ${{ steps.scriptgemini.outputs.result }}
       - name: GeminiAction
         uses: iletai/GeminiAction@develop
         with:
