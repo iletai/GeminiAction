@@ -33,8 +33,9 @@ jobs:
             const { VertexAI } = require("@google-cloud/vertexai");
             const { GenerativeModel } = require("@google/generative-ai");
             const body = context.payload.issue.body;
+            const apiKey = process.env;
             # Using Gemini API Model with Env scerets API Key Gemini
-            const model = new GenerativeModel(apiKey: process.env.gemini-api-key, {
+            const model = new GenerativeModel(apiKey: apiKey, {
               model: "gemini-pro",
               generationConfig: { temperature: 0 },
             });
