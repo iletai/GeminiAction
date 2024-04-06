@@ -18,9 +18,9 @@ jobs:
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-        
+
       - name: Cache yarn dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
@@ -28,7 +28,7 @@ jobs:
             ${{ runner.os }}-yarn-
 
       - name: Cache npm dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: '~/.npm'
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -48,13 +48,13 @@ jobs:
         id: scriptgemini
         uses: actions/github-script@v7
         env:
-          gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
+          APIKEY: ${{ secrets.GEMINI_API_KEY }}
         with:
           script: |
             const { GenerativeModel } = require("@google/generative-ai");
             const body = context.payload.issue.body;
             console.log(body);
-            const model = new GenerativeModel(process.env, {
+            const model = new GenerativeModel(process.env.APIKEY, {
               model: "gemini-pro",
               generationConfig: { temperature: 0 },
             });
