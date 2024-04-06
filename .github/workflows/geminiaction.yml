@@ -57,7 +57,7 @@ jobs:
             const genAI = new GoogleGenerativeAI(process.env.APIKEY);
             const model = genAI.getGenerativeModel({ model: "gemini-pro" });
             console.log(body);
-            const response = await model.generateContent(body);
+            const result = await model.generateContent(body);
             const response = await result.response;
             console.log(response.text());
       - run: echo ${{ steps.scriptgemini.outputs.result }}
