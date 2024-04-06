@@ -2,46 +2,66 @@ import * as core from "@actions/core";
 import * as github from "@actions/github";
 import { GenerativeModel } from "@google/generative-ai";
 
-async function run() {
+try {
     const apiKey = core.getInput("gemini-api-key");
     const githubToken = core.getInput("github-token");
+  
     const octokit = github.getOctokit(githubToken);
-    const prTemplate = await github.context.repo;
-    const model = new GenerativeModel(apiKey);
-    const issue = await octokit.rest.issues.get({
-        ...github.context.issue,
-        issue_number: github.context.issue.number,
-      });
-    const availableLabels = await octokit.rest.issues.listLabelsForRepo({
-    ...github.context.repo,
-    }); 
-    const availablePullRequests = await octokit.rest.pulls.list({
-        ...github.context.repo,
-    });
-    // Get First Pull Request If Exist. Avoid Null
-    if (availablePullRequests.data.length === 0) {
-        console.log("No Pull Requests Available");
-        return;
+    // Check null issues
+    if (!github.context.issue) {
+      throw new Error("No issue context found");
+    } else {
+      core.debug(`Issue context: ${JSON.stringify(github.context.issue)}`);
     }
-    const firstPullRequest = availablePullRequests.data[0];
-    const pullRequest = await octokit.rest.pulls.get({
-        ...github.context.repo,
-        pull_number: firstPullRequest.number,
+    const issue = await octokit.rest.issues.get({
+      ...github.context.issue,
+      issue_number: github.context.issue.number,
     });
-    // Comment Pull Request
-    await octokit.rest.pulls.createReview({
-        ...github.context.repo,
-        pull_number: pullRequest.data.number,
-        body: "Hello from Gemini!",
+    const availableLabels = await octokit.rest.issues.listLabelsForRepo({
+      ...github.context.repo,
     });
-    // await octokit.rest.issues.createComment({
-    //     ...github.context.repo,
-    //     issue_number: pullRequest.data.number,
-    //     body: "Hello from Gemini!",
-    // });
-    console.log(prTemplate);
-    console.log(availableLabels);
-    console.log(issue); 
-}
-
-run();
+  
+    const prompt = `
+      You have a role to manage a GitHub repository. Given an issue information (subject and body), choose suitable labels to it from the labels available for the repository.
+  
+      Use the following format:
+      LABELS: "the names of the chosen labels, each name must not be surrounded double quotes, separated by a comma"
+  
+      Only use the following labels:
+      \`\`\`
+      ${JSON.stringify(availableLabels.data, null, 2)}
+      \`\`\`
+  
+      ## ISSUE ##
+      SUBJECT: ${issue.data.title}
+      BODY: ${issue.data.body}
+    `;
+    core.debug(`Prompt: ${prompt}`);
+  
+    const model = new GenerativeModel(apiKey, {
+      model: "gemini-pro",
+      generationConfig: { temperature: 0 },
+    });
+    const completion = await model.generateContent(prompt);
+  
+    core.debug({ completion });
+  
+    let labels = /LABELS\: (.+)/g.exec(completion.response.text());
+  
+    if (labels) {
+      labels = labels[1].trim().split(/,\s*/);
+  
+      await octokit.rest.issues.setLabels({
+        owner: github.context.issue.owner,
+        repo: github.context.issue.repo,
+        issue_number: github.context.issue.number,
+        labels,
+      });
+    } else {
+      core.setFailed(
+        `Failed to propose labels: completion=${completion.data.choices[0].text}`,
+      );
+    }
+  } catch (error) {
+    core.setFailed(`Error Message: ${error.stack}`);
+  }  
