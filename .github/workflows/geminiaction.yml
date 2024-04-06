@@ -53,14 +53,14 @@ jobs:
         with:
           script: |
             const { GenerativeModel } = require("@google/generative-ai");
-            const { GoogleGenerativeAI } = require("@google/generative-ai");
             const body = context.payload.issue.body;
-            const model = new GenerativeModel(process.env.APIKEY, "gemini-pro", { temperature: 0 });            console.log(body);
+            const model = new GenerativeModel(process.env.APIKEY, "gemini-pro", { temperature: 0 });
+            console.log(body);
             const result = await model.generateContent(body);
             const response = await result.response;
             console.log(response.text());
       # - run: echo ${{ steps.scriptgemini.outputs.result }}
-      - name: GeminiAction
-        uses: iletai/GeminiAction@develop
-        with:
-          gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
+      # - name: GeminiAction
+      #   uses: iletai/GeminiAction@develop
+      #   with:
+      #     gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
