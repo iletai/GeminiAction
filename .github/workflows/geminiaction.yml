@@ -50,7 +50,7 @@ jobs:
           APIKEY: ${{ secrets.GEMINI_API_KEY }}
         with:
           script: |
-            const modelName = "gemini-pro";
+            const modelName = ["gemini-pro"];
             const { GenerativeModel } = require("@google/generative-ai");
             const body = context.payload.issue.body;
             const model = new GenerativeModel(process.env.APIKEY, modelName, { temperature: 0 });
