@@ -1,0 +1,13 @@
+name: 'Gemini Github Action'
+description: 'Handle Action With Gemini'
+inputs:
+  gemini-api-key: #Id Gemini Input Key
+    description: 'Gemini API Key'
+    required: true
+  github-token:
+    description: "GITHUB_TOKEN"
+    required: true
+    default: ${{ github.token }}
+runs:
+  using: 'node20'
+  main: dist/index.js
