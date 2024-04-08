@@ -76,6 +76,7 @@ jobs:
   intergration_result:
     needs: example_gemini
     name: Return Usable
+    timeout-minutes: 5
     runs-on: unbuntu-latest
     steps:
       - name: Using Scripts
