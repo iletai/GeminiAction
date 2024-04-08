@@ -79,7 +79,7 @@ jobs:
               `;
             console.log(body);
             console.log(prompt);
-            const result = await model.generateContent(body);
+            const result = await model.generateContent(prompt);
             const labels = /LABELS\: (.+)/g.exec(result.response.text());
             console.log(labels);
             return labels
