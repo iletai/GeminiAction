@@ -34,13 +34,11 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-
-      - name: setup-node
-        uses: actions/setup-node@v4
+ 
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "20"
-      - name: Checkout
-        uses: actions/checkout@v4
+          node-version: '20.x'
       - name: Install NPM dependencies
         run: npm i @google/generative-ai
 
@@ -52,9 +50,10 @@ jobs:
           APIKEY: ${{ secrets.GEMINI_API_KEY }}
         with:
           script: |
+            const model = "gemini-pro";
             const { GenerativeModel } = require("@google/generative-ai");
             const body = context.payload.issue.body;
-            const model = new GenerativeModel(process.env.APIKEY, "gemini-pro", { temperature: 0 });
+            const model = new GenerativeModel(process.env.APIKEY, model, { temperature: 0 });
             console.log(body);
             const result = await model.generateContent(body);
             const response = await result.response;
