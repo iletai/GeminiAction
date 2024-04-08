@@ -46,7 +46,7 @@ jobs:
         with:
           script: |
             const modelName = {
-              model: [process.env.GEMINI_MODEL],
+              model: "gemini-pro",
               generationConfig: { temperature: 0 },
             };
             const { GenerativeModel } = require("@google/generative-ai");
