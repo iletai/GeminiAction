@@ -42,11 +42,10 @@ jobs:
         continue-on-error: true
         env:
           APIKEY: ${{ secrets.GEMINI_API_KEY }}
-          GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}
         with:
           script: |
             const modelName = {
-              model: "gemini-pro",
+              model: ["gemini-pro"],
               generationConfig: { temperature: 0 },
             };
             const { GenerativeModel } = require("@google/generative-ai");
@@ -70,9 +69,10 @@ jobs:
                 BODY: ${context.payload.issue.body}
               `;
             const result = await model.generateContent(prompt);
-            const labels = /LABELS\: (.+)/g.exec(result.response.text().[1].trim().split(/,\s*/));
-            console.log(labels);
-            return labels
+            const labels = /LABELS\: (.+)/g.exec(result.response.text());
+            const label = labels[0].trim().split(/,\s*/);
+            console.log(label);
+            return label
   intergration_result:
     needs: example_gemini
     name: Return Usable
