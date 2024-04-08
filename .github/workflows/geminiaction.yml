@@ -79,8 +79,9 @@ jobs:
                 BODY: ${context.payload.issue.body}
               `;
             console.log(body);
+            console.log(prompt);
             const result = await model.generateContent(body);
-            let labels = /LABELS\: (.+)/g.exec(result.response.text());
+            const labels = /LABELS\: (.+)/g.exec(result.response.text());
             return labels
       - run: echo ${{ steps.scriptgemini.outputs.result }}
 
