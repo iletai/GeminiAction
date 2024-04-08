@@ -57,9 +57,10 @@ jobs:
             const { GenerativeModel } = require("@google/generative-ai");
             const body = context.payload.issue.body;
             const model = new GenerativeModel(process.env.APIKEY, modelName);
-            const { data: availableLabels } = await github.issues.listLabelsForRepo({
+            const { data: availableLabels } = await github.rest.issues.listLabelsOnIssue({
               owner: context.repo.owner,
               repo: context.repo.repo,
+              issue_number: context.payload.issue.number,
             });
             const prompt = `
                 You have a role to manage a GitHub repository. Given an issue information (subject and body), choose suitable labels to it from the labels available for the repository.
