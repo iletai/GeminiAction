@@ -74,28 +74,21 @@ jobs:
             const label = labels[1].trim().split(/,\s*/);
             console.log(label);
             return label
-  intergration_result:
-    needs: example_gemini
-    name: Return Usable
-    timeout-minutes: 5
-    runs-on: unbuntu-latest
-    steps:
-        # Reusable checkout step from previous step
-        - uses: actions/checkout@v4
-        - uses: actions/github-script@v7
-          with:
+          result-encoding: string
+      - name: Add Labels
+        uses: actions/github-script@v7
+        with:
             script: |
               github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.payload.issue.number,
-                body: `The labels are ${{ needs.steps.scriptgemini.outputs.result }}`
+                body: `The labels are ${{ steps.scriptgemini.outputs.result }}`
               });
               github.rest.issue.addLabels({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.payload.issue.number,
-                labels: ${{ needs.steps.scriptgemini.outputs.result }}
+                labels: ${{ steps.scriptgemini.outputs.result }}
               });
-              console.log('${{ needs.steps.scriptgemini.outputs.result }}')
-
+              console.log('${{ steps.scriptgemini.outputs.result }}')
