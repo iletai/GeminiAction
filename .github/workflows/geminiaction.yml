@@ -79,16 +79,15 @@ jobs:
         uses: actions/github-script@v7
         with:
             script: |
-              github.rest.issues.createComment({
+              await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.payload.issue.number,
                 body: `The labels are ${{ steps.scriptgemini.outputs.result }}`
               });
-              github.rest.issues.setLabels({
+              await github.rest.issues.setLabels({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.payload.issue.number,
                 labels: ${{ steps.scriptgemini.outputs.result }}
               });
-              console.log('${{ steps.scriptgemini.outputs.result }}')
