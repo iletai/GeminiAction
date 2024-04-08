@@ -71,7 +71,7 @@ jobs:
               `;
             const result = await model.generateContent(prompt);
             const labels = /LABELS\: (.+)/g.exec(result.response.text());
-            const label = labels[0].trim().split(/,\s*/);
+            const label = labels[1].trim().split(/,\s*/);
             console.log(label);
             return label
   intergration_result:
@@ -89,13 +89,13 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.payload.issue.number,
-                body: `The labels are ${{ steps.scriptgemini.outputs.result }}`
+                body: `The labels are ${{ needs.steps.scriptgemini.outputs.result }}`
               });
               github.rest.issue.addLabels({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.payload.issue.number,
-                labels: ${{ steps.scriptgemini.outputs.result }}
+                labels: ${{ needs.steps.scriptgemini.outputs.result }}
               });
-              console.log('${{ steps.scriptgemini.outputs.result }}')
+              console.log('${{ needs.steps.scriptgemini.outputs.result }}')
 
