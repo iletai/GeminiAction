@@ -1,11 +1,11 @@
 # Table of contents
 
-* [Using Gemini AI to optimize workload.](README.md)
+* [What is Gemini?](README.md)
 * [Introduction](introduction.md)
-* [Summary of this article written by Gemini-pro and Github Actions](summary-of-this-article-written-by-gemini-pro-and-github-actions.md)
+* [About of this article written by Gemini-pro and Github Actions](summary-of-this-article-written-by-gemini-pro-and-github-actions.md)
 * [About Github Actions](about-github-actions.md)
-* [Prepare](prepare.md)
-* [Implement](implement.md)
-* [Set a Discussions event as a trigger](set-a-discussions-event-as-a-trigger.md)
-* [Tried It](tried-it.md)
+* [Prepare Environment](prepare.md)
+* [Implement Scripts To Interact With Gemini](implement.md)
+* [Set An Issues Event As A Trigger](set-a-discussions-event-as-a-trigger.md)
+* [Tried It On Github](tried-it.md)
 * [Summary](summary.md)

@@ -1,10 +1,15 @@
-# Implement
+# Implement Scripts To Interact With Gemini
 
 Full Implementation of demo action here:
 
 {% embed url="https://github.com/iletai/GeminiAction/blob/develop/.github/workflows/gemini_custom.yml" %}
 
-To use Google Gemini AI, We need to install node js and Google generative-ai in Github Actions with config.  And avoid reinstall unnecessary, cache yaml and npm
+Gemini AI and Github could include a method for access with Rest API. We will integration it.
+
+With Model LLM \`gemini-pro\`
+
+\
+To use Google Gemini AI, We need to install node js and Google generative-ai in Github Actions with config.  And avoid reinstalling unnecessary, cache yaml and npm
 
 ```yaml
  - name: Get yarn cache directory path

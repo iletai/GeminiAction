@@ -1,4 +1,8 @@
-# Using Gemini AI to optimize workload.
+---
+description: Using Gemini AI to optimize workload.
+---
+
+# What is Gemini?
 
 Gemini AI, presumably a large language model from Google AI, can be leveraged to optimize workload management, particularly for tasks involving understanding and manipulating text data. This optimization can happen in several ways:
 

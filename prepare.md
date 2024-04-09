@@ -1,4 +1,4 @@
-# Prepare
+# Prepare Environment
 
 To understand this article, you need to prepare
 
@@ -9,7 +9,9 @@ To understand this article, you need to prepare
 * Knowledge is basic about Github actions.
 * API Key Google Gemini AI
 
+And an example repository to run github actions workflows.
 
+[https://github.com/iletai/GeminiAction](https://github.com/iletai/GeminiAction)
 
 ## Requirement Package/Actions
 

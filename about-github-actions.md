@@ -1,8 +1,25 @@
+---
+cover: .gitbook/assets/image.png
+coverY: 0
+layout:
+  cover:
+    visible: true
+    size: full
+  title:
+    visible: true
+  description:
+    visible: true
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
 # About Github Actions
 
 **What are GitHub Actions?**
-
-
 
 GitHub Actions is a powerful built-in continuous integration and continuous delivery (CI/CD) platform offered by GitHub. It allows you to automate various tasks within your software development workflow directly within your GitHub repositories. These tasks can include:
 
