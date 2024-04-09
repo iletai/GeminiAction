@@ -1,7 +1,6 @@
 # Table of contents
 
 * [Using Gemini AI to optimize workload.](README.md)
-* [Page](<README (1).md>)
 * [Introduction](introduction.md)
 * [Summary of this article written by Gemini-pro and Github Actions](summary-of-this-article-written-by-gemini-pro-and-github-actions.md)
 * [About Github Actions](about-github-actions.md)
